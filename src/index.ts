@@ -1,5 +1,6 @@
 import fs from 'node:fs';
 import path from 'node:path';
+import ignore from 'ignore';
 import { body, head } from './html';
 
 export interface FileInfo {
@@ -45,7 +46,9 @@ function generateHtml(dirPath: string, files: FileInfo[], relativePath: string):
 <!DOCTYPE html>
 <html lang="en">
 ${head(title)}
+
 ${body(title, parentLink, rows)}
+
 </html>`;
 }
 
@@ -54,14 +57,21 @@ ${body(title, parentLink, rows)}
  * 
  * @param baseDir - The directory to scan for files (relative to project root or absolute).
  * @param outputDir - The directory where the generated index.html files will be saved.
+ * @param ignoreList - An optional list of patterns to ignore (similar to .gitignore).
  */
-export async function generateStaticListing(baseDir: string, outputDir: string): Promise<void> {
+export async function generateStaticListing(baseDir: string, outputDir: string, ignoreList?: string[]): Promise<{ filesListed: number, dirsListed: number}> {
   const absoluteBaseDir = path.isAbsolute(baseDir) ? baseDir : path.resolve(process.cwd(), baseDir);
   const absoluteOutputDir = path.isAbsolute(outputDir) ? outputDir : path.resolve(process.cwd(), outputDir);
+
+  var filesListed = 0;
+  var dirsListed = 0;
+
 
   if (!fs.existsSync(absoluteBaseDir)) {
     throw new Error(`Source directory not found: ${absoluteBaseDir}`);
   }
+
+  const ig = ignoreList ? ignore().add(ignoreList) : null;
 
   const traverse = (currentDir: string, relativePath: string) => {
     const items = fs.readdirSync(currentDir);
@@ -69,6 +79,13 @@ export async function generateStaticListing(baseDir: string, outputDir: string):
 
     for (const item of items) {
       const fullPath = path.join(currentDir, item);
+      const itemRelativePath = path.join(relativePath, item);
+
+      // Check if the item should be ignored
+      if (ig && ig.ignores(itemRelativePath)) {
+        continue;
+      }
+
       const stats = fs.statSync(fullPath);
       const isDir = stats.isDirectory();
 
@@ -81,19 +98,18 @@ export async function generateStaticListing(baseDir: string, outputDir: string):
         mtimeStr: stats.mtime.toLocaleString(),
       });
 
-
-
       if (isDir) {
-        traverse(fullPath, path.join(relativePath, item));
+        dirsListed ++;
+        traverse(fullPath, itemRelativePath);
       } else {
+        filesListed ++;
         // Copy directory content
-        const targetFilePath = path.join(absoluteOutputDir, relativePath, item);
+        const targetFilePath = path.join(absoluteOutputDir, itemRelativePath);
         const targetFileDir = path.dirname(targetFilePath);
         if (!fs.existsSync(targetFileDir)) {
           fs.mkdirSync(targetFileDir, { recursive: true });
         }
         fs.copyFileSync(fullPath, targetFilePath);
-
       }
     }
 
@@ -110,8 +126,13 @@ export async function generateStaticListing(baseDir: string, outputDir: string):
 
     const outputFilePath = path.join(targetDir, 'index.html');
     fs.writeFileSync(outputFilePath, html, 'utf8');
-    console.log(`Generated: ${outputFilePath}`);
+    console.log(`Generated: ${outputFilePath} (${filesInfo.length} items)`);
   };
 
   traverse(absoluteBaseDir, '');
+
+  return {
+    filesListed,
+    dirsListed
+  };
 }
