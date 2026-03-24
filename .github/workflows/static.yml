@@ -45,7 +45,7 @@ jobs:
 
       - name: Generate directory listing
         run: |
-          node dist/cli.js . ./public-listing -if .gitignore -if .testignore
+          node dist/cli.js . ./public-listing -if .gitignore -if .testignore -root /static-dir-list/
 
       - name: Deploy to gh-pages branch
         if: ${{ !env.ACT }}
