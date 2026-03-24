@@ -1,0 +1,141 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Index of /</title>
+  <style>
+    body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif; padding: 20px; color: #333; line-height: 1.5; background-color: #fff; }
+    h1 { font-size: 1.5rem; border-bottom: 1px solid #eee; padding-bottom: 0.75rem; margin-bottom: 1.5rem; }
+    table { width: 100%; border-collapse: collapse; }
+    th, td { text-align: left; padding: 0.75rem; border-bottom: 1px solid #f0f0f0; }
+    th { background: #fafafa; font-weight: 600; font-size: 0.875rem; text-transform: uppercase; letter-spacing: 0.05em; color: #666; cursor: pointer; user-select: none; position: relative; }
+    th:hover { background: #f0f0f0; }
+    th.sort-asc::after { content: ' ↑'; position: absolute; }
+    th.sort-desc::after { content: ' ↓'; position: absolute; }
+    .detailsColumn { text-align: right; color: #888; font-size: 0.875rem; font-variant-numeric: tabular-nums; }
+    .icon { text-decoration: none; color: #2563eb; font-weight: 500; }
+    .icon:hover { text-decoration: underline; color: #1d4ed8; }
+    .dir::before { content: "📁 "; margin-right: 0.5rem; }
+    .file::before { content: "📄 "; margin-right: 0.5rem; }
+    .up::before { content: "⬆️ "; margin-right: 0.5rem; }
+    #parentDirLinkBox { margin-bottom: 1rem; }
+    
+    @media (prefers-color-scheme: dark) {
+      body { background-color: #121212; color: #e0e0e0; }
+      h1 { border-bottom-color: #333; }
+      th { background: #1e1e1e; color: #aaa; border-bottom-color: #333; }
+      th:hover { background: #2a2a2a; }
+      td { border-bottom-color: #222; }
+      .detailsColumn { color: #999; }
+      .icon { color: #60a5fa; }
+      .icon:hover { color: #93c5fd; }
+    }
+
+    @media (max-width: 640px) {
+      .detailsColumn { display: none; }
+    }
+  </style>
+</head>
+
+
+<body>
+  <h1 id="header">Index of /</h1>
+
+  
+
+  <table>
+    <thead>
+      <tr class="header" id="theader">
+        <th onclick="sortTable(0)">Name</th>
+        <th onclick="sortTable(1)" class="detailsColumn">Size</th>
+        <th onclick="sortTable(2)" class="detailsColumn">Date Modified</th>
+      </tr>
+    </thead>
+    <tbody id="tbody">
+      <tr data-is-dir="true">
+  <td data-value=".git/"><a class="icon dir" href=".git/">.git/</a></td>
+  <td class="detailsColumn" data-value="0"></td>
+  <td class="detailsColumn" data-value="1774381003971.4038">3/24/2026, 7:36:43 PM</td>
+</tr><tr data-is-dir="true">
+  <td data-value=".github/"><a class="icon dir" href=".github/">.github/</a></td>
+  <td class="detailsColumn" data-value="0"></td>
+  <td class="detailsColumn" data-value="1774381003969.8088">3/24/2026, 7:36:43 PM</td>
+</tr><tr data-is-dir="true">
+  <td data-value="src/"><a class="icon dir" href="src/">src/</a></td>
+  <td class="detailsColumn" data-value="0"></td>
+  <td class="detailsColumn" data-value="1774381003970.3706">3/24/2026, 7:36:43 PM</td>
+</tr><tr data-is-dir="false">
+  <td data-value=".gitignore"><a class="icon file" href=".gitignore">.gitignore</a></td>
+  <td class="detailsColumn" data-value="70">70 B</td>
+  <td class="detailsColumn" data-value="1774381003969.8088">3/24/2026, 7:36:43 PM</td>
+</tr><tr data-is-dir="false">
+  <td data-value="LICENSE"><a class="icon file" href="LICENSE">LICENSE</a></td>
+  <td class="detailsColumn" data-value="1056">1.03 kB</td>
+  <td class="detailsColumn" data-value="1774381003969.8088">3/24/2026, 7:36:43 PM</td>
+</tr><tr data-is-dir="false">
+  <td data-value="package-lock.json"><a class="icon file" href="package-lock.json">package-lock.json</a></td>
+  <td class="detailsColumn" data-value="49094">47.94 kB</td>
+  <td class="detailsColumn" data-value="1774381011641.6123">3/24/2026, 7:36:51 PM</td>
+</tr><tr data-is-dir="false">
+  <td data-value="package.json"><a class="icon file" href="package.json">package.json</a></td>
+  <td class="detailsColumn" data-value="823">823 B</td>
+  <td class="detailsColumn" data-value="1774381003969.8088">3/24/2026, 7:36:43 PM</td>
+</tr><tr data-is-dir="false">
+  <td data-value="README.md"><a class="icon file" href="README.md">README.md</a></td>
+  <td class="detailsColumn" data-value="959">959 B</td>
+  <td class="detailsColumn" data-value="1774381003969.8088">3/24/2026, 7:36:43 PM</td>
+</tr><tr data-is-dir="false">
+  <td data-value="tsconfig.json"><a class="icon file" href="tsconfig.json">tsconfig.json</a></td>
+  <td class="detailsColumn" data-value="425">425 B</td>
+  <td class="detailsColumn" data-value="1774381003970.3706">3/24/2026, 7:36:43 PM</td>
+</tr>
+    </tbody>
+  </table>
+
+  <script>
+    function sortTable(n) {
+      const table = document.getElementById("tbody");
+      const headers = document.querySelectorAll("th");
+      let rows = Array.from(table.rows);
+      let dir = headers[n].getAttribute("data-dir") === "asc" ? "desc" : "asc";
+      
+      // Reset headers
+      headers.forEach(h => {
+        h.classList.remove("sort-asc", "sort-desc");
+        h.removeAttribute("data-dir");
+      });
+      
+      headers[n].classList.add(dir === "asc" ? "sort-asc" : "sort-desc");
+      headers[n].setAttribute("data-dir", dir);
+
+      rows.sort((a, b) => {
+        const aIsDir = a.getAttribute("data-is-dir") === "true";
+        const bIsDir = b.getAttribute("data-is-dir") === "true";
+
+        if (aIsDir && !bIsDir) return -1;
+        if (!aIsDir && bIsDir) return 1;
+
+        let x = a.cells[n].getAttribute("data-value");
+        let y = b.cells[n].getAttribute("data-value");
+        
+        if (n > 0) { // Size or Date (numeric)
+          x = parseFloat(x);
+          y = parseFloat(y);
+        } else { // Name (string)
+          x = x.toLowerCase();
+          y = y.toLowerCase();
+        }
+
+        if (x < y) return dir === "asc" ? -1 : 1;
+        if (x > y) return dir === "asc" ? 1 : -1;
+        return 0;
+      });
+
+      rows.forEach(row => table.appendChild(row));
+    }
+  </script>
+</body>
+
+</html>
