@@ -35,10 +35,10 @@ function generateRowHtml(file: FileInfo): string {
 }
 
 // Generates the HTML content for a directory listing.
-function generateHtml(dirPath: string, files: FileInfo[], relativePath: string): string {
-  const title = `Index of ${relativePath || '/'}`;
+function generateHtml(rootLocation: string, files: FileInfo[], relativePath: string): string {
+  const title = `Index of ${("/" + relativePath) || '/'}`;
   const parentPath = relativePath ? path.dirname(relativePath) : null;
-  const parentLink = parentPath === '.' ? '/' : (parentPath ? `/${parentPath}/` : null);
+  const parentLink = parentPath === '.' ? rootLocation : (parentPath ? `${rootLocation}${parentPath}/` : null);
 
   const rows = files.map(generateRowHtml).join('');
 
@@ -58,8 +58,9 @@ ${body(title, parentLink, rows)}
  * @param baseDir - The directory to scan for files (relative to project root or absolute).
  * @param outputDir - The directory where the generated index.html files will be saved.
  * @param ignoreList - An optional list of patterns to ignore (similar to .gitignore).
- */
-export async function generateStaticListing(baseDir: string, outputDir: string, ignoreList?: string[]): Promise<{ filesListed: number, dirsListed: number}> {
+ * @param rootLocation - The base URL path where the static files will be served from (defaults to "/").
+*/
+export async function generateStaticListing(baseDir: string, outputDir: string, ignoreList?: string[], rootLocation = "/"): Promise<{ filesListed: number, dirsListed: number}> {
   const absoluteBaseDir = path.isAbsolute(baseDir) ? baseDir : path.resolve(process.cwd(), baseDir);
   const absoluteOutputDir = path.isAbsolute(outputDir) ? outputDir : path.resolve(process.cwd(), outputDir);
 
@@ -113,7 +114,7 @@ export async function generateStaticListing(baseDir: string, outputDir: string, 
       }
     }
 
-    const html = generateHtml(currentDir, filesInfo.sort((a, b) => {
+    const html = generateHtml(rootLocation, filesInfo.sort((a, b) => {
       if (a.isDir && !b.isDir) return -1;
       if (!a.isDir && b.isDir) return 1;
       return a.name.localeCompare(b.name);
